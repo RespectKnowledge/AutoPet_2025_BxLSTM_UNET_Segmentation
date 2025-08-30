@@ -12,5 +12,6 @@ save the image via `bash export.sh`.
 ## Testing
 
 Please check insllation requirements.txt file via `pip install -r requirements.txt`. 
-Make sure model weights exist in `/nnUNet_results`. After that you can run `bash test.sh`.
+Make sure model weights exist in `/nnUNet_results`. After that you can run `bash test.sh`. 
+You can try `bash local_test.sh`
 
