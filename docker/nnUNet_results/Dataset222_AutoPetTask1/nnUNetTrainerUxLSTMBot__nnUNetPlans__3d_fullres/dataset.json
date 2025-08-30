@@ -1,0 +1,16 @@
+{
+    "channel_names": {
+        "0": "CT",
+        "1": "PET"
+    },
+    "labels": {
+        "background": 0,
+        "tumor": 1
+    },
+    "numTraining": 1614,
+    "file_ending": ".nii.gz",
+    "name": "Combined",
+    "reference": "https://autopet-iii.grand-challenge.org/",
+    "release": "release",
+    "description": "AutoPET3 Multicenter Multitracer Generalization"
+}
