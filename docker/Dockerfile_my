@@ -1,0 +1,45 @@
+#FROM pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime
+FROM pytorch/pytorch:latest
+ENV PYTHONUNBUFFERED=1
+ENV HOME=/home/user
+
+RUN groupadd -r user && useradd -m --no-log-init -r -g user user
+RUN mkdir -p /opt/app && chown -R user:user /opt/app
+
+WORKDIR /opt/app
+
+COPY --chown=user:user requirements.txt /opt/app/
+COPY --chown=user:user my_main_inference1.py /opt/app/
+COPY --chown=user:user my_main_inference.py /opt/app/
+COPY --chown=user:user utils.py /opt/app/
+COPY --chown=user:user nnUNet_results /opt/app/nnUNet_results
+#COPY --chown=user:user resources /opt/app/resources
+COPY --chown=user:user nnunetv2 /opt/app/nnunetv2
+# Install python packages globally as root
+USER root
+RUN python -m pip install -U pip && \
+    python -m pip install --no-cache-dir -r requirements.txt
+
+# Make sure user owns all relevant directories
+RUN chown -R user:user /opt/app
+
+# Switch back to non-root user
+USER user
+
+# Ensure PATH includes /usr/local/bin
+ENV PATH="/usr/local/bin:${PATH}"
+
+ENV nnUNet_raw="/opt/app/nnUNet_raw"
+ENV nnUNet_preprocessed="/opt/app/nnUNet_preprocessed"
+ENV nnUNet_results="/opt/app/nnUNet_results"
+
+# Create necessary directories with user ownership
+RUN mkdir -p /opt/app/nnUNet_raw && \
+    mkdir -p /opt/app/nnUNet_preprocessed && \
+    mkdir -p /opt/app/nnUNet_raw_data_base/nnUNet_raw_data/Task001_TCIA/imagesTs && \
+    mkdir -p /opt/app/nnUNet_raw_data_base/nnUNet_raw_data/Task001_TCIA/result && \
+    chown -R user:user /opt/app/nnUNet_raw /opt/app/nnUNet_preprocessed /opt/app/nnUNet_raw_data_base
+
+ENTRYPOINT ["python", "/opt/app/my_main_inference1.py"]
+
+
